@@ -3,10 +3,14 @@ import { defineConfig } from 'vite'
 import tsConfigPaths from 'vite-tsconfig-paths'
 import tailwindcss from '@tailwindcss/vite'
 import viteReact from '@vitejs/plugin-react'
+import { nitro } from 'nitro/vite'
 
 export default defineConfig({
   server: {
     port: 3000,
+  },
+  nitro: {
+    preset: 'vercel',
   },
   plugins: [
     tailwindcss(),
@@ -14,6 +18,7 @@ export default defineConfig({
       projects: ['./tsconfig.json'],
     }),
     tanstackStart(),
+    nitro(),
     viteReact(),
   ],
 })
