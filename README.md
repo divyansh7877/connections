@@ -1,24 +1,42 @@
-# Connections
+# Connections V2
 
-Mobile web MVP for event networking with one shared QR code per room.
+TanStack Start frontend hosted on Vercel with Convex as the realtime backend.
 
-## Run
+## Stack
+
+- TanStack Start
+- Convex
+- React Query
+- Vercel deployment target
+
+## Local setup
+
+1. Install dependencies:
 
 ```bash
-bun start
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
-
-## Test
+2. Create or connect a Convex project:
 
 ```bash
-bun test
+npx convex dev
 ```
 
-## Notes
+3. Start the app:
 
-- Rooms are stored in `data/store.json`.
-- Rooms expire automatically after 8 hours by default.
-- Runtime and scripts are Bun-native.
-- QR display currently uses the hosted image endpoint at `api.qrserver.com`; the join link remains usable even if that image is blocked.
+```bash
+npm run dev
+```
+
+## Required environment
+
+Convex injects `VITE_CONVEX_URL` during local setup. For hosted environments, set the same value in Vercel.
+
+## Current behavior
+
+- Create a temporary room with a 6-character code.
+- Join with name + LinkedIn URL.
+- See room membership update in realtime.
+- Remove your own membership from the current browser session.
+- Block joins after expiry and purge stale rooms later.

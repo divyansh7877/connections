@@ -28,7 +28,7 @@ body {
 
 body {
   color: var(--ink);
-  font-family: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
+  font-family: 'Avenir Next', 'Trebuchet MS', 'Segoe UI', sans-serif;
   background:
     radial-gradient(circle at top left, rgba(255, 214, 175, 0.75), transparent 32%),
     radial-gradient(circle at 85% 20%, rgba(48, 122, 92, 0.12), transparent 24%),
@@ -36,7 +36,7 @@ body {
 }
 
 body::before {
-  content: "";
+  content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
@@ -45,6 +45,12 @@ body::before {
     linear-gradient(90deg, rgba(17, 34, 21, 0.02) 1px, transparent 1px);
   background-size: 28px 28px;
   mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.45), transparent 70%);
+}
+
+button,
+a,
+input {
+  font: inherit;
 }
 
 .page-shell {
@@ -72,7 +78,7 @@ body::before {
 .site-header h1,
 .panel h2,
 .panel h3 {
-  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Baskerville, Georgia, serif;
+  font-family: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Baskerville, Georgia, serif;
   letter-spacing: -0.03em;
   line-height: 0.95;
   margin: 0;
@@ -107,7 +113,7 @@ body::before {
 }
 
 .panel::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: auto -10% -36% auto;
   width: 220px;
@@ -155,13 +161,16 @@ body::before {
 }
 
 .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 0;
   border-radius: 999px;
   padding: 14px 18px;
-  font: inherit;
   font-weight: 700;
   cursor: pointer;
   transition: transform 120ms ease, opacity 120ms ease, background 120ms ease;
+  text-decoration: none;
 }
 
 .button:hover {
@@ -190,9 +199,19 @@ body::before {
   border: 1px solid rgba(17, 34, 21, 0.15);
 }
 
+.inline-link-button {
+  width: fit-content;
+}
+
 .helper-text {
   margin: 0;
   font-size: 0.95rem;
+}
+
+.loading-panel {
+  min-height: 160px;
+  display: grid;
+  place-items: center;
 }
 
 .room-shell {
@@ -291,7 +310,6 @@ body::before {
   background: rgba(255, 255, 255, 0.92);
   padding: 14px 16px;
   color: var(--ink);
-  font: inherit;
 }
 
 .join-form {
@@ -325,7 +343,7 @@ body::before {
   font-weight: 600;
 }
 
-.feedback-text[data-error="true"],
+.feedback-text[data-error='true'],
 .error-banner {
   color: #8a2d00;
 }
@@ -386,10 +404,6 @@ body::before {
   white-space: nowrap;
 }
 
-.hidden {
-  display: none;
-}
-
 @media (min-width: 760px) {
   .panel-main {
     padding: 34px;
@@ -423,6 +437,6 @@ body::before {
 
   .button-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
 }
