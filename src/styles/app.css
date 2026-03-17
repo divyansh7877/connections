@@ -69,7 +69,7 @@ input {
 .card-index {
   margin: 0;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.11em;
   font-size: 0.72rem;
   font-weight: 700;
   color: var(--mint);
@@ -80,7 +80,7 @@ input {
 .panel h3 {
   font-family: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Baskerville, Georgia, serif;
   letter-spacing: -0.03em;
-  line-height: 0.95;
+  line-height: 1;
   margin: 0;
 }
 
@@ -99,7 +99,7 @@ input {
 
 .app-frame {
   display: grid;
-  gap: 18px;
+  gap: 20px;
 }
 
 .panel {
@@ -133,19 +133,30 @@ input {
 
 .panel-main h2 {
   font-size: clamp(2.2rem, 5vw, 4rem);
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 .panel-main p,
 .panel-secondary p {
   color: var(--muted);
-  line-height: 1.6;
+  line-height: 1.55;
+}
+
+.panel-copy {
+  display: grid;
+  gap: 14px;
+  max-width: 36rem;
+}
+
+.panel-copy > p:last-child {
+  margin: 0;
 }
 
 .action-stack {
   display: grid;
-  gap: 14px;
-  margin-top: 24px;
+  gap: 12px;
+  margin-top: 28px;
+  max-width: 22rem;
 }
 
 .info-grid {
@@ -160,14 +171,26 @@ input {
   background: rgba(255, 255, 255, 0.58);
 }
 
+.info-grid h3 {
+  margin-top: 10px;
+  font-size: 1.45rem;
+}
+
+.info-grid article p:last-child {
+  margin: 10px 0 0;
+}
+
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 0;
   border-radius: 999px;
-  padding: 14px 18px;
+  min-height: 50px;
+  padding: 14px 22px;
   font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
   cursor: pointer;
   transition: transform 120ms ease, opacity 120ms ease, background 120ms ease;
   text-decoration: none;
@@ -205,7 +228,8 @@ input {
 
 .helper-text {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.94rem;
+  line-height: 1.45;
 }
 
 .loading-panel {
@@ -216,7 +240,7 @@ input {
 
 .room-shell {
   display: grid;
-  gap: 26px;
+  gap: 28px;
 }
 
 .room-hero,
@@ -230,7 +254,7 @@ input {
 
 .room-grid {
   display: grid;
-  gap: 18px;
+  gap: 20px;
 }
 
 .badge-cluster,
@@ -267,6 +291,13 @@ input {
   background: rgba(255, 255, 255, 0.62);
 }
 
+.share-card,
+.join-card,
+.panel-secondary {
+  display: grid;
+  gap: 16px;
+}
+
 .qr-shell {
   display: grid;
   place-items: center;
@@ -291,7 +322,7 @@ input {
   display: block;
   font-size: 0.84rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--muted);
   margin: 0 0 8px;
@@ -314,7 +345,7 @@ input {
 
 .join-form {
   display: grid;
-  gap: 14px;
+  gap: 12px;
 }
 
 .joined-state,
@@ -338,9 +369,10 @@ input {
 
 .feedback-text {
   min-height: 1.4em;
-  margin: 12px 0 0;
+  margin: 4px 0 0;
   color: var(--mint);
   font-weight: 600;
+  line-height: 1.4;
 }
 
 .feedback-text[data-error='true'],
@@ -381,6 +413,7 @@ input {
   margin: 0;
   color: var(--ink);
   font-weight: 800;
+  line-height: 1.25;
 }
 
 .member-time {
@@ -419,6 +452,15 @@ input {
 }
 
 @media (max-width: 759px) {
+  .page-shell {
+    width: min(100% - 20px, 1120px);
+    padding: 20px 0 44px;
+  }
+
+  .site-header {
+    padding: 18px 2px 22px;
+  }
+
   .site-header h1 {
     max-width: 12ch;
   }
@@ -438,5 +480,12 @@ input {
   .button-row {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .action-stack,
+  .inline-link-button,
+  .button-row .button,
+  .inline-field .button {
+    width: 100%;
   }
 }
