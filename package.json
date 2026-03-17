@@ -1,0 +1,15 @@
+{
+  "name": "connections-event-qr",
+  "version": "1.0.0",
+  "description": "Event QR networking MVP",
+  "type": "module",
+  "packageManager": "bun@1.3.10",
+  "scripts": {
+    "start": "bun server.js",
+    "dev": "bun --watch server.js",
+    "test": "bun test"
+  },
+  "engines": {
+    "bun": ">=1.3.10"
+  }
+}

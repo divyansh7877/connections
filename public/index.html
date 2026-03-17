@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connections</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <p class="eyebrow">Connections</p>
+        <h1>One room. One scan. Everyone leaves with the right LinkedIn links.</h1>
+        <p class="lede">
+          Replace the awkward scan-everyone spiral with a temporary room for the table, booth, or event cluster.
+        </p>
+      </header>
+
+      <main id="app" class="app-frame" aria-live="polite"></main>
+
+      <template id="landing-template">
+        <section class="panel panel-main">
+          <div class="panel-copy">
+            <p class="kicker">Event networking MVP</p>
+            <h2>Create a room in one tap.</h2>
+            <p>
+              Share one QR code. Every attendee joins the same room, adds their LinkedIn profile, and gets the full list back.
+            </p>
+          </div>
+
+          <div class="action-stack">
+            <button id="create-room-button" class="button button-primary">Create event room</button>
+            <p class="helper-text">Rooms stay active for 8 hours and then expire automatically.</p>
+          </div>
+        </section>
+
+        <section class="panel panel-secondary">
+          <div class="info-grid">
+            <article>
+              <p class="card-index">01</p>
+              <h3>Host starts a room</h3>
+              <p>A shared QR code and link are generated immediately.</p>
+            </article>
+            <article>
+              <p class="card-index">02</p>
+              <h3>People add themselves</h3>
+              <p>Each attendee submits their name and LinkedIn URL from their own phone.</p>
+            </article>
+            <article>
+              <p class="card-index">03</p>
+              <h3>Everyone opens profiles</h3>
+              <p>The live room list becomes the group’s connection directory.</p>
+            </article>
+          </div>
+        </section>
+      </template>
+
+      <template id="room-template">
+        <section class="panel panel-main room-shell">
+          <div class="room-hero">
+            <div>
+              <p class="kicker">Active room</p>
+              <h2 id="room-title">Room</h2>
+              <p id="room-status" class="status-line"></p>
+            </div>
+            <div class="badge-cluster">
+              <span class="badge" id="room-code-badge"></span>
+              <span class="badge badge-muted" id="room-members-badge"></span>
+            </div>
+          </div>
+
+          <div class="room-grid">
+            <section class="share-card">
+              <div class="share-header">
+                <div>
+                  <p class="section-label">Share this room</p>
+                  <h3>Scan once</h3>
+                </div>
+                <button id="refresh-room-button" class="button button-ghost" type="button">Refresh</button>
+              </div>
+
+              <div class="qr-shell">
+                <img id="qr-image" alt="QR code for the room join link" />
+              </div>
+
+              <label class="input-label" for="join-link">Join link</label>
+              <div class="inline-field">
+                <input id="join-link" class="text-input" type="text" readonly />
+                <button id="copy-link-button" class="button button-secondary" type="button">Copy</button>
+              </div>
+
+              <div class="button-row">
+                <button id="share-link-button" class="button button-secondary" type="button">Share</button>
+                <button id="new-room-button" class="button button-ghost" type="button">New room</button>
+              </div>
+
+              <p class="helper-text">
+                If the QR image is blocked by network policy, the link still works and can be shared directly.
+              </p>
+            </section>
+
+            <section class="join-card">
+              <div class="section-header">
+                <div>
+                  <p class="section-label">Join the list</p>
+                  <h3>Add your LinkedIn</h3>
+                </div>
+              </div>
+
+              <form id="join-form" class="join-form">
+                <label class="input-label" for="display-name">Name</label>
+                <input id="display-name" class="text-input" name="displayName" maxlength="80" placeholder="Jordan Lee" required />
+
+                <label class="input-label" for="linkedin-url">LinkedIn URL</label>
+                <input
+                  id="linkedin-url"
+                  class="text-input"
+                  name="linkedinUrl"
+                  placeholder="https://www.linkedin.com/in/your-profile"
+                  required
+                />
+
+                <button class="button button-primary" type="submit">Join room</button>
+              </form>
+
+              <div id="joined-state" class="joined-state hidden">
+                <p class="joined-title">You’re already in this room.</p>
+                <p class="helper-text">Your entry is pinned below on this device until you remove it.</p>
+                <button id="remove-me-button" class="button button-ghost" type="button">Remove my entry</button>
+              </div>
+
+              <div id="room-expired" class="expired-state hidden">
+                <p class="joined-title">This room has expired.</p>
+                <p class="helper-text">Create a new room to keep the networking chain moving.</p>
+              </div>
+
+              <p id="form-feedback" class="feedback-text" role="status"></p>
+            </section>
+          </div>
+        </section>
+
+        <section class="panel panel-secondary">
+          <div class="section-header">
+            <div>
+              <p class="section-label">People in the room</p>
+              <h3>Member list</h3>
+            </div>
+          </div>
+          <div id="members-list" class="members-list"></div>
+        </section>
+      </template>
+    </div>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
