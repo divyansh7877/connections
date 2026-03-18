@@ -1,0 +1,10 @@
+name = "linkedin-summarizer"
+workspace = "openclaw-hack"
+type = "agent"
+
+[runtime]
+generation = "mk3"
+memory = 4096
+
+[env]
+NODE_ENV = "production"

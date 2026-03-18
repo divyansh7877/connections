@@ -1,23 +1,38 @@
 import { ConvexError, v } from 'convex/values'
 import {
+  LINKEDIN_PROFILE_PENDING_STALE_MS,
   ROOM_PURGE_GRACE_MS,
   ROOM_TTL_MS,
   createRoomCode,
   deriveRoomStatus,
   normalizeDisplayName,
   normalizeLinkedInUrl,
+  shouldRefreshLinkedInProfile,
 } from '../src/lib/room-utils'
 import { internal } from './_generated/api'
 import { internalMutation, mutation, query } from './_generated/server'
 import type { Doc, Id } from './_generated/dataModel'
 
-const memberView = (member: Doc<'members'>, sessionToken?: string) => ({
-  id: member._id,
-  displayName: member.displayName,
-  linkedinUrl: member.linkedinUrl,
-  joinedAt: member.joinedAt,
-  isCurrentSession: Boolean(sessionToken && member.sessionToken === sessionToken),
-})
+function memberView(
+  member: Doc<'members'>,
+  profile: Doc<'linkedinProfiles'> | null,
+  sessionToken?: string,
+) {
+  return {
+    id: member._id,
+    displayName: member.displayName,
+    linkedinUrl: member.linkedinUrl,
+    joinedAt: member.joinedAt,
+    isCurrentSession: Boolean(sessionToken && member.sessionToken === sessionToken),
+    profileName: profile?.name ?? member.displayName,
+    headline: profile?.headline ?? null,
+    imageUrl: profile?.imageUrl ?? null,
+    summary: profile?.summary ?? null,
+    visibility: profile?.visibility ?? null,
+    enrichmentStatus: profile?.status ?? 'pending',
+    lastError: profile?.lastError ?? null,
+  }
+}
 
 async function deleteRoomWithMembers(ctx: any, roomId: Id<'rooms'>) {
   const members = await ctx.db
@@ -49,15 +64,26 @@ export const getRoomByCode = query({
       .withIndex('by_roomId', (q) => q.eq('roomId', room._id))
       .collect()
 
+    const membersWithProfiles = await Promise.all(
+      members.map(async (member) => {
+        const profile = await ctx.db
+          .query('linkedinProfiles')
+          .withIndex('by_linkedinUrl', (q) => q.eq('linkedinUrl', member.linkedinUrl))
+          .unique()
+
+        return { member, profile }
+      }),
+    )
+
     return {
       id: room._id,
       code: room.code,
       createdAt: room.createdAt,
       expiresAt: room.expiresAt,
       status,
-      members: members
-        .sort((left, right) => left.joinedAt - right.joinedAt)
-        .map((member) => memberView(member, args.sessionToken)),
+      members: membersWithProfiles
+        .sort((left, right) => left.member.joinedAt - right.member.joinedAt)
+        .map(({ member, profile }) => memberView(member, profile, args.sessionToken)),
     }
   },
 })
@@ -125,13 +151,32 @@ export const joinRoom = mutation({
       throw new ConvexError('That LinkedIn profile is already in this room.')
     }
 
+    const cachedProfile = await ctx.db
+      .query('linkedinProfiles')
+      .withIndex('by_linkedinUrl', (q) => q.eq('linkedinUrl', linkedinUrl))
+      .unique()
+
+    const joinedAt = Date.now()
+
     const memberId = await ctx.db.insert('members', {
       roomId: room._id,
       displayName,
       linkedinUrl,
-      joinedAt: Date.now(),
+      joinedAt,
       sessionToken: args.sessionToken,
     })
+
+    const shouldQueueRefresh = shouldRefreshLinkedInProfile(cachedProfile, joinedAt)
+      && !(cachedProfile?.status === 'pending'
+        && typeof cachedProfile.lastAttemptAt === 'number'
+        && joinedAt - cachedProfile.lastAttemptAt < LINKEDIN_PROFILE_PENDING_STALE_MS)
+
+    if (shouldQueueRefresh) {
+      await ctx.scheduler.runAfter(0, internal.linkedinProfilesActions.enrichLinkedInProfile, {
+        linkedinUrl,
+        attemptNumber: cachedProfile?.retryCount ?? 0,
+      })
+    }
 
     return { memberId }
   },

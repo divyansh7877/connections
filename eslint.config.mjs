@@ -5,5 +5,5 @@ import convexPlugin from '@convex-dev/eslint-plugin'
 export default defineConfig([
   ...tanstackConfig,
   ...convexPlugin.configs.recommended,
-  globalIgnores(['convex/_generated', 'tmp/**']),
+  globalIgnores(['convex/_generated', 'linkedin-summarizer/**', 'tmp/**']),
 ])

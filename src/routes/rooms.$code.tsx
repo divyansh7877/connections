@@ -8,6 +8,7 @@ import type { FormEvent } from 'react'
 import { makeQrDataUrl } from '~/lib/qr'
 import { formatExpiry } from '~/lib/room-utils'
 import { getSessionToken } from '~/lib/session'
+import type { MemberView } from '~/lib/room-utils'
 
 export const Route = createFileRoute('/rooms/$code')({
   component: RoomPage,
@@ -317,18 +318,42 @@ function RoomPage() {
             ) : (
               room.members.map((member) => (
                 <article key={member.id} className={`member-card ${member.isCurrentSession ? 'member-card-current' : ''}`}>
-                  <div className="member-meta">
-                    <p className="member-name">
-                      {member.displayName}
-                      {member.isCurrentSession ? <span className="member-tag">You</span> : null}
-                    </p>
-                    <p className="member-time">
-                      Joined {new Date(member.joinedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
-                    </p>
+                  <div className="member-card-main">
+                    <div className="member-avatar-shell" aria-hidden="true">
+                      {member.imageUrl ? (
+                        <img className="member-avatar" src={member.imageUrl} alt="" />
+                      ) : (
+                        <span className="member-avatar member-avatar-fallback">
+                          {getInitials(member.profileName)}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="member-meta">
+                      <div className="member-name-row">
+                        <p className="member-name">
+                          {member.profileName}
+                          {member.isCurrentSession ? <span className="member-tag">You</span> : null}
+                        </p>
+                        <span className={`member-status-pill member-status-${member.enrichmentStatus}`}>
+                          {getStatusLabel(member)}
+                        </span>
+                      </div>
+
+                      {member.headline ? <p className="member-headline">{member.headline}</p> : null}
+                      <p className="member-summary">{getMemberSummary(member)}</p>
+                      <p className="member-time">
+                        Joined {new Date(member.joinedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
+                      </p>
+                    </div>
                   </div>
-                  <a className="button button-secondary member-link" href={member.linkedinUrl} target="_blank" rel="noreferrer">
-                    Open LinkedIn
-                  </a>
+
+                  <div className="member-actions">
+                    <a className="button button-secondary member-link" href={member.linkedinUrl} target="_blank" rel="noreferrer">
+                      Open LinkedIn
+                    </a>
+                    {member.visibility === 'limited' ? <p className="member-note">Limited profile visibility</p> : null}
+                  </div>
                 </article>
               ))
             )}
@@ -354,4 +379,49 @@ function getErrorMessage(error: unknown, fallback: string) {
     return error.message
   }
   return fallback
+}
+
+function getInitials(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? '')
+    .join('') || '?'
+}
+
+function getMemberSummary(member: MemberView) {
+  if (member.summary) {
+    return member.summary
+  }
+
+  if (member.enrichmentStatus === 'pending') {
+    return 'Fetching LinkedIn preview…'
+  }
+
+  if (member.visibility === 'limited') {
+    return 'LinkedIn exposes only limited public profile details for this member.'
+  }
+
+  if (member.lastError) {
+    return 'Preview unavailable right now. The LinkedIn link still works.'
+  }
+
+  return 'Profile preview unavailable right now. The LinkedIn link still works.'
+}
+
+function getStatusLabel(member: MemberView) {
+  if (member.enrichmentStatus === 'ready') {
+    return 'Ready'
+  }
+
+  if (member.enrichmentStatus === 'pending') {
+    return 'Fetching'
+  }
+
+  if (member.visibility === 'limited' || member.enrichmentStatus === 'partial') {
+    return 'Limited'
+  }
+
+  return 'Unavailable'
 }

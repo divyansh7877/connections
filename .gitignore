@@ -18,6 +18,7 @@ node_modules
 /public/build
 /dist/
 /dist-ssr/
+linkedin-summarizer/dist/
 
 .env.sentry-build-plugin
 /test-results/

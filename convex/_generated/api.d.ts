@@ -9,6 +9,8 @@
  */
 
 import type * as crons from "../crons.js";
+import type * as linkedinProfiles from "../linkedinProfiles.js";
+import type * as linkedinProfilesActions from "../linkedinProfilesActions.js";
 import type * as rooms from "../rooms.js";
 
 import type {
@@ -19,6 +21,8 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   crons: typeof crons;
+  linkedinProfiles: typeof linkedinProfiles;
+  linkedinProfilesActions: typeof linkedinProfilesActions;
   rooms: typeof rooms;
 }>;
 

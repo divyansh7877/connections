@@ -1,6 +1,6 @@
 {
   "include": ["**/*.ts", "**/*.tsx", "public/script*.js"],
-  "exclude": ["node_modules", "dist", ".output", "tmp", ".cursor"],
+  "exclude": ["node_modules", "dist", ".output", "tmp", ".cursor", "linkedin-summarizer"],
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "react-jsx",
